@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.db.FictiveStorageManager;
 import edu.java.bot.db.StorageManager;
+import edu.java.bot.dialogs.Dialog;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,15 @@ import org.springframework.stereotype.Component;
     }
 
     @Override public SendMessage handle(Update update) {
-        return CHAIN.handle(update);
+        if (update.message().text().startsWith("/")) {
+            return CHAIN.handle(update);
+        } else {
+            Dialog dialog = STORAGE.getDialog(update.message().chat().id());
+            if (dialog == null) {
+                return new SendMessage(update.message().chat().id(), "我不明白 (я вас не понимаю...)");
+            }
+            return dialog.handle(update);
+        }
     }
 
     @Override public List<Command> getAllCommands() {

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-
 public class TestBot {
     private final static String STACKOVERFLOW_LINK = "https://stackoverflow.com/users/2387041/fool";
     private final static String GITHUB_LINK = "https://github.com/Annstasia";
@@ -21,7 +20,7 @@ public class TestBot {
     private final static String NO_LINKS_RESPONSE = "Нет добавленных ссылок";
     private final static String TRACK_RESPONSE = "Ссылка добавлена в наблюдение";
     private final static String UNTRACK_RESPONSE = "Ссылка убрана из наблюдения";
-    private final static String HELP_RESPONSE =         """
+    private final static String HELP_RESPONSE = """
         Приложение для отслеживания обновлений контента по ссылкам. При появлении новых событий отправляется уведомление в Telegram.
         Команда /start
                 Начало работы с ботом
@@ -35,10 +34,7 @@ public class TestBot {
                 Информация о командах и боте
                 """;
 
-
-
-    record Pair(long chatId, String text) {
-    }
+    private final static String NEED_LINK_RESPONSE = "Введите ссылку";
 
     @Test
     void testOneUserBot() {
@@ -48,28 +44,31 @@ public class TestBot {
         ScrapperBotUpdatesListener updatesListener =
             new ScrapperBotUpdatesListener(telegramBot, handler);
 
-
         List<Update> updates = Stream.of(
             "/start",
             "/list",
-            "/track " + GITHUB_LINK
+            "/track ",
+            GITHUB_LINK
             ,
             "/list"
             ,
-            "/untrack " +GITHUB_LINK,
+            "/untrack ",
+            GITHUB_LINK,
             "/list"
             ,
             "/help"
-            ).map(BaseUpdate::update).toList();
+        ).map(BaseUpdate::update).toList();
         updatesListener.process(updates);
         InOrder inOrder = Mockito.inOrder(telegramBot);
         Stream.of(
             REGISTER_RESPONSE,
             NO_LINKS_RESPONSE,
+            NEED_LINK_RESPONSE,
             TRACK_RESPONSE
             ,
-            "Ссылки из " + GITHUB_SOURCE + ":\n" +GITHUB_LINK + "\n"
+            "Ссылки из " + GITHUB_SOURCE + ":\n" + GITHUB_LINK + "\n"
             ,
+            NEED_LINK_RESPONSE,
             UNTRACK_RESPONSE,
             NO_LINKS_RESPONSE
             ,
@@ -80,38 +79,43 @@ public class TestBot {
 
     }
 
-
     @Test
     void testTwoUserBot() {
         CommandHandler handler = Mockito.spy(new CommandHandlerChain());
 
         TelegramBot telegramBot =
             Mockito.spy(new ScrapperBot(new ApplicationConfig("token2"), handler));
-         ScrapperBotUpdatesListener updatesListener = new ScrapperBotUpdatesListener(telegramBot, handler);
-
+        ScrapperBotUpdatesListener updatesListener = new ScrapperBotUpdatesListener(telegramBot, handler);
 
         List<Update> updates = Stream.of(
             new Pair(1, "/start"),
             new Pair(2, "/start"),
-            new Pair(1, "/track " + GITHUB_LINK),
-            new Pair(2, "/track " + STACKOVERFLOW_LINK),
+            new Pair(1, "/track "),
+            new Pair(2, "/track "),
+            new Pair(1, GITHUB_LINK),
+            new Pair(2, STACKOVERFLOW_LINK),
             new Pair(2, "/list"),
             new Pair(1, "/list")
-            ).map(pair -> BaseUpdate.update(pair.chatId(), pair.text())).toList();
+        ).map(pair -> BaseUpdate.update(pair.chatId(), pair.text())).toList();
         updatesListener.process(updates);
         InOrder inOrder = Mockito.inOrder(telegramBot);
         Stream.of(
             new Pair(1, REGISTER_RESPONSE),
             new Pair(2, REGISTER_RESPONSE),
+            new Pair(1, NEED_LINK_RESPONSE),
+            new Pair(2, NEED_LINK_RESPONSE),
             new Pair(1, TRACK_RESPONSE),
             new Pair(2, TRACK_RESPONSE),
             new Pair(2, "Ссылки из " + STACKOVERFLOW_SOURCE + ":\n" + STACKOVERFLOW_LINK + "\n"),
             new Pair(1, "Ссылки из " + GITHUB_SOURCE + ":\n" + GITHUB_LINK + "\n")
-            ).forEach(pair -> inOrder.verify(telegramBot).execute(
-                Mockito.argThat(
-                    arg -> arg.getParameters().get("chat_id").equals(pair.chatId())
-                           && arg.getParameters()
-                                 .get("text").equals(pair.text()))));
+        ).forEach(pair -> inOrder.verify(telegramBot).execute(
+            Mockito.argThat(
+                arg -> arg.getParameters().get("chat_id").equals(pair.chatId())
+                       && arg.getParameters()
+                             .get("text").equals(pair.text()))));
 
+    }
+
+    record Pair(long chatId, String text) {
     }
 }

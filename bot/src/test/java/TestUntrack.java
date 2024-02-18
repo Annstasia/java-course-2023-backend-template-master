@@ -1,10 +1,10 @@
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.utility.BotUtils;
-import edu.java.bot.commands.TrackCommand;
-import edu.java.bot.commands.UntrackCommand;
 import edu.java.bot.db.FictiveStorageManager;
 import edu.java.bot.db.StorageManager;
+import edu.java.bot.dialogs.TrackDialog;
+import edu.java.bot.dialogs.UntrackDialog;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ public class TestUntrack {
     private final static String untrackIncorrect = "Ссылка не распознана";
     private final static String untrackNotExisting = "Ссылка не найдена среди находящихся на мониторинге";
     StorageManager storage;
-    UntrackCommand untrackCommand;
+    UntrackDialog untrackDialog;
     Update stackoverflowUpdateMessage;
     Update githubUpdateMessage;
     Update unidentifiedUpdateMessage;
@@ -25,41 +25,36 @@ public class TestUntrack {
 
     Update createUpdateMock(String query) {
         return BotUtils.parseUpdate("{message:{chat:{id:" + chatID + "},text:\""
-            + query + "\"}}");
+                                    + query + "\"}}");
     }
 
     @BeforeEach
     void reset() {
         storage = new FictiveStorageManager();
-        TrackCommand trackCommand = new TrackCommand(storage);
+        TrackDialog trackDialog = new TrackDialog(storage);
         String track = "/track";
 
-        trackCommand.handle(createUpdateMock(track + " " + stackoverflowLink));
-        trackCommand.handle(createUpdateMock(track + " " + githubLink));
+        trackDialog.handle(createUpdateMock(stackoverflowLink));
+        trackDialog.handle(createUpdateMock(githubLink));
 
-        untrackCommand = new UntrackCommand(storage);
-        stackoverflowUpdateMessage = createUpdateMock(untrack + " " + stackoverflowLink);
-        githubUpdateMessage = createUpdateMock(untrack + " " + githubLink);
-        unidentifiedUpdateMessage = createUpdateMock(untrack + " " + "https://en.wikipedia.org/wiki/42_(number)");
+        untrackDialog = new UntrackDialog(storage);
+        stackoverflowUpdateMessage = createUpdateMock(stackoverflowLink);
+        githubUpdateMessage = createUpdateMock(githubLink);
+        unidentifiedUpdateMessage = createUpdateMock("https://en.wikipedia.org/wiki/42_(number)");
 
-    }
-
-    @Test
-    void untrackName() {
-        Assertions.assertEquals(untrack, untrackCommand.getCommandName());
     }
 
     @Test
     void untrackExistingLink() {
-        SendMessage answer = untrackCommand.handle(stackoverflowUpdateMessage);
+        SendMessage answer = untrackDialog.handle(stackoverflowUpdateMessage);
         Assertions.assertEquals(chatID, answer.getParameters().get("chat_id"));
         Assertions.assertEquals(untrackCorrect, answer.getParameters().get("text"));
         Assertions.assertEquals(1, storage.getAllLinksById(chatID).size());
-        answer = untrackCommand.handle(githubUpdateMessage);
+        answer = untrackDialog.handle(githubUpdateMessage);
         Assertions.assertEquals(chatID, answer.getParameters().get("chat_id"));
         Assertions.assertEquals(untrackCorrect, answer.getParameters().get("text"));
         Assertions.assertEquals(0, storage.getAllLinksById(chatID).size());
-        answer = untrackCommand.handle(githubUpdateMessage);
+        answer = untrackDialog.handle(githubUpdateMessage);
         Assertions.assertEquals(chatID, answer.getParameters().get("chat_id"));
         Assertions.assertEquals(untrackNotExisting, answer.getParameters().get("text"));
         Assertions.assertEquals(0, storage.getAllLinksById(chatID).size());
@@ -67,7 +62,7 @@ public class TestUntrack {
 
     @Test
     void testNotExisting() {
-        SendMessage answer = untrackCommand.handle(unidentifiedUpdateMessage);
+        SendMessage answer = untrackDialog.handle(unidentifiedUpdateMessage);
         Assertions.assertEquals(chatID, answer.getParameters().get("chat_id"));
         Assertions.assertEquals(untrackIncorrect, answer.getParameters().get("text"));
         Assertions.assertEquals(2, storage.getAllLinksById(chatID).size());

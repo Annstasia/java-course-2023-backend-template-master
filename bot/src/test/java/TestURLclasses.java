@@ -6,11 +6,14 @@ import org.junit.jupiter.api.Test;
 public class TestURLclasses {
     @Test
     void stackoverflowLinkTest() {
-        Assertions.assertEquals("StackOverflow",
-                                new StackOverflowURLInfo("https://stackoverflow.com").getResourceType()
-                                );
-        Assertions.assertEquals("https://stackoverflow.com",
-                                new StackOverflowURLInfo("https://stackoverflow.com").toString());
+        Assertions.assertEquals(
+            "StackOverflow",
+            new StackOverflowURLInfo("https://stackoverflow.com").getResourceType()
+        );
+        Assertions.assertEquals(
+            "https://stackoverflow.com",
+            new StackOverflowURLInfo("https://stackoverflow.com").toString()
+        );
     }
 
     @Test
