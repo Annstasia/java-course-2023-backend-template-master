@@ -1,7 +1,6 @@
 package edu.java.bot.links.links_comparators;
 
 import edu.java.bot.links.classes.URLInfo;
-
 import java.util.Comparator;
 
 public class ComparatorByType implements Comparator<URLInfo> {
