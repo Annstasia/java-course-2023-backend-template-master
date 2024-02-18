@@ -8,20 +8,6 @@ import java.util.List;
 public class HelpCommand implements Command {
     private final String info;
 
-//    private final String info =
-//        """
-//            Приложение для отслеживания обновлений контента по ссылкам.\s
-//            При появлении новых событий отправляется уведомление в Telegram.
-//            Команда /start
-//            Команда /track [link] добавляется ссылку в мониторинг. \s
-//            На данный момент поддерживаются только ссылки из stackoverflow и \s
-//            github. Например: /track \s
-//            https://stackoverflow.com/search?q=unsupported%20link
-//            Команда /untrack [link] убирает ссылку из мониторинга. Например: \s
-//            /untrack https://stackoverflow.com/search?q=unsupported%20link
-//            Команда /list возвращает все добавленные ссылки
-//            Команда /help выводит инструкцию""";
-
     public HelpCommand(List<Command> otherCommand) {
         StringBuilder builder = new StringBuilder(
             "Приложение для отслеживания обновлений контента по ссылкам. При "

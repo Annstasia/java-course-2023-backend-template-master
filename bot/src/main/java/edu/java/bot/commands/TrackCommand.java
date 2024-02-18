@@ -6,11 +6,10 @@ import edu.java.bot.db.StorageManager;
 import edu.java.bot.links.classes.URLInfo;
 import edu.java.bot.links.parsers.LinkParserChain;
 import edu.java.bot.links.parsers.URLParser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TrackCommand implements Command {
-    private final static Logger LOGGER = LogManager.getLogger("TRACK COMMAND");
     private final static URLParser URL_PARSER = new LinkParserChain();
     private final StorageManager storage;
     private final static String NOT_PARSED = "Ссылка не распознана";
@@ -48,7 +47,7 @@ public class TrackCommand implements Command {
                     answer = CORRECT_ADD;
                 } else {
                     answer = UNHANDLED_PARSE_ERROR;
-                    LOGGER.error(
+                    log.error(
                         "не добавилась ссылка. chatId: " + chatId
                         + " ; ссылка: "
                         + update.message().text());

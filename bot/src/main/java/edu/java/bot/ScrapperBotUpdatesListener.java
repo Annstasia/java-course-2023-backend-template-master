@@ -7,9 +7,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import edu.java.bot.commands.CommandHandler;
 import java.util.List;
-import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.jul.LogManager;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,8 +15,6 @@ import org.springframework.stereotype.Component;
 public class ScrapperBotUpdatesListener implements UpdatesListener {
     TelegramBot telegramBot;
     CommandHandler commandHandler;
-    private final static Logger LOGGER =
-        new LogManager().getLogger("update-listener");
 
     public ScrapperBotUpdatesListener(TelegramBot bot, CommandHandler handler) {
         this.telegramBot = bot;
@@ -38,8 +34,6 @@ public class ScrapperBotUpdatesListener implements UpdatesListener {
     private void process(Update update) {
         if (update.message().text().startsWith("/")) {
             SendMessage sendMessage = commandHandler.handle(update);
-            log.error(
-                "send message " + sendMessage.getParameters().get("text"));
             SendResponse response = telegramBot.execute(sendMessage);
         } else {
             telegramBot.execute(new SendMessage(

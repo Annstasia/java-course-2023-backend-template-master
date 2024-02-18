@@ -6,11 +6,8 @@ import edu.java.bot.db.StorageManager;
 import edu.java.bot.links.classes.URLInfo;
 import edu.java.bot.links.parsers.LinkParserChain;
 import edu.java.bot.links.parsers.URLParser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class UntrackCommand implements Command {
-    private final static Logger LOGGER = LogManager.getLogger("UNTRACK COMMAND");
     private final static URLParser URL_PARSER = new LinkParserChain();
     private final StorageManager storage;
 
@@ -18,18 +15,15 @@ public class UntrackCommand implements Command {
         this.storage = storage;
     }
 
-    @Override
-    public String getCommandName() {
+    @Override public String getCommandName() {
         return "/untrack";
     }
 
-    @Override
-    public String getCommandDescription() {
+    @Override public String getCommandDescription() {
         return "Убрать ссылку из наблюдения";
     }
 
-    @Override
-    public SendMessage handle(Update update) {
+    @Override public SendMessage handle(Update update) {
         long chatId = update.message().chat().id();
         String answer;
         URLInfo info = URL_PARSER.parseLink(update.message().text().substring(getCommandName().length() + 1));
