@@ -1,8 +1,5 @@
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.SendResponse;
 import com.pengrad.telegrambot.utility.BotUtils;
 import edu.java.bot.commands.TrackCommand;
 import edu.java.bot.db.FictiveStorageManager;
@@ -11,11 +8,8 @@ import edu.java.bot.links.classes.GitHubURLInfo;
 import edu.java.bot.links.classes.StackOverflowURLInfo;
 import edu.java.bot.links.classes.URLInfo;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.testcontainers.shaded.org.bouncycastle.oer.its.etsi102941.Url;
 
 public class TestTrack {
     StorageManager storage;

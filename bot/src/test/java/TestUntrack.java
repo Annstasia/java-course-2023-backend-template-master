@@ -1,5 +1,3 @@
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.utility.BotUtils;
@@ -10,7 +8,6 @@ import edu.java.bot.db.StorageManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class TestUntrack {
     private final static String untrackCorrect = "Ссылка убрана из наблюдения";

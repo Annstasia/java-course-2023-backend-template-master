@@ -54,4 +54,3 @@ public class ScrapperBotUpdatesListener implements UpdatesListener {
     }
 }
 
-// TODO: РАЗДЕЛИТЬ ТАКИ

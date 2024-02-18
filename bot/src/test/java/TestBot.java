@@ -1,19 +1,15 @@
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.ScrapperBot;
 import edu.java.bot.ScrapperBotUpdatesListener;
 import edu.java.bot.commands.CommandHandler;
 import edu.java.bot.commands.CommandHandlerChain;
 import edu.java.bot.configuration.ApplicationConfig;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.InOrder;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 
 public class TestBot {
