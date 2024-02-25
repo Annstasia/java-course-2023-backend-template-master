@@ -12,10 +12,10 @@ import edu.java.sources_interection.url_info.StackOverflowSearchURLInfo;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.function.Predicate;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -34,12 +34,12 @@ public class StackoverflowTest {
     private final static long QUESTION_ID = 1;
     private final static String SEARCH_QUERY = "unsupported link";
 
-    @Before public void initServer() {
+    @BeforeAll public static void initServer() {
         wireMockServer.start();
         configureFor(HOST, PORT);
     }
 
-    @Before public void setUpQuestionsMock() {
+    @BeforeAll public static void setUpQuestionsMock() {
         String question = "/questions/" + QUESTION_ID;
         wireMockServer.stubFor(get(urlPathEqualTo(question)).andMatching(new FromDateMatcher(lastUpdate -> lastUpdate
                                                                                                            <= lastActive.toEpochSecond()))
@@ -52,7 +52,7 @@ public class StackoverflowTest {
                                                             .willReturn(okJson("{\"items\":[]}")));
     }
 
-    @Before public void setUpSearchMock() {
+    @BeforeAll public static void setUpSearchMock() {
         wireMockServer.stubFor(get(urlPathEqualTo("/search")).withQueryParam("q", equalTo(SEARCH_QUERY))
                                                              .withQueryParam("site", equalTo("stackoverflow"))
                                                              .andMatching(new FromDateMatcher(lastUpdate -> lastUpdate
@@ -100,7 +100,7 @@ public class StackoverflowTest {
         Assertions.assertNull(updates);
     }
 
-    @After public void stopWire() {
+    @AfterAll public static void stopWire() {
         wireMockServer.stop();
     }
 
