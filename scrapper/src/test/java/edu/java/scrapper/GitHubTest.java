@@ -1,4 +1,4 @@
-package edu.java.scrapper.sources_interaction;
+package edu.java.scrapper;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
